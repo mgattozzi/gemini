@@ -9,7 +9,7 @@ use syn::{
 #[proc_macro_attribute]
 pub fn gemini(_attr: TokenStream, tokens: TokenStream) -> TokenStream {
   let input = parse_macro_input!(tokens as ItemFn);
-  if let None = &input.sig.asyncness {
+  if input.sig.asyncness.is_none() {
     panic!("The gemini macro requires that you put the attribute on an async function")
   }
   let mut sync = input.clone();
