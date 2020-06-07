@@ -1,16 +1,22 @@
 [package]
 name = "gemini"
-version = "0.1.0"
+version = "0.0.1"
 authors = ["Michael Gattozzi <mgattozzi@gmail.com>"]
 edition = "2018"
-decription = "An attribute proc macro that lets a user choose a sync or async API with no overhead maintenance burden."
+description = "An attribute proc macro that lets a user choose a sync or async API with no overhead maintenance burden."
+readme = "README.md"
+homepage = "https://github.com/mgattozzi/gemini"
+repository = "https://github.com/mgattozzi/gemini"
+license = "MIT OR Apache-2.0"
+keywords = [ "rust", "async", "sync", "proc-macro", "proc-macro-attributes" ]
+categories = [ "asynchronous", "concurrency", "development-tools" ]
 
 [lib]
 proc-macro = true
 
 [dependencies]
-syn = { version = "*", features=["full", "extra-traits", "clone-impls", "visit-mut"] }
-quote = "*"
+syn = { version = "1.0", features = [ "full", "extra-traits", "clone-impls", "visit-mut" ] }
+quote = "1.0"
 
 [features]
 default = []
