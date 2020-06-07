@@ -1,5 +1,4 @@
 # `gemini`
------
 An attribute proc macro that lets a user choose a sync or async API with no
 overhead maintenance burden.
 
@@ -51,7 +50,7 @@ to:
 use gemini::gemini;
 
 #[cfg(not(feature = "sync"))]
-pub async fn basic(item: Vec<String>) -> Result<(), String> {
+pub async fn basic() -> Result<(), String> {
     func().await?;
     Ok(())
 }
