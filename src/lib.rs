@@ -3,7 +3,7 @@ use quote::quote;
 use syn::{
   parse_macro_input,
   visit_mut::{self, VisitMut},
-  Expr, ItemFn,
+  Block, Expr, ExprBlock, ItemFn, Stmt,
 };
 
 #[proc_macro_attribute]
@@ -29,11 +29,29 @@ struct StripAwait;
 
 impl VisitMut for StripAwait {
   fn visit_expr_mut(&mut self, node: &mut Expr) {
-    if let Expr::Await(await_expr) = &node {
-      *node = *await_expr.base.clone();
-      return;
+    match &node {
+      Expr::Await(expr) => *node = *expr.base.clone(),
+      Expr::Async(expr) => {
+        let attrs = expr.attrs.clone();
+        let mut block = expr.block.clone();
+        self.visit_block_mut(&mut block);
+        *node = Expr::Block(ExprBlock {
+          attrs,
+          block,
+          label: None,
+        });
+      }
+      // Delegate to the default impl to visit nested expressions.
+      _ => visit_mut::visit_expr_mut(self, node),
     }
-    // Delegate to the default impl to visit nested expressions.
-    visit_mut::visit_expr_mut(self, node);
+  }
+
+  fn visit_block_mut(&mut self, node: &mut Block) {
+    for stmt in &mut node.stmts {
+      match stmt {
+        Stmt::Expr(expr) | Stmt::Semi(expr, _) => (*self).visit_expr_mut(expr),
+        _ => visit_mut::visit_stmt_mut(self, stmt),
+      }
+    }
   }
 }
